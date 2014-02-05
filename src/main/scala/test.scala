@@ -70,11 +70,7 @@ class Dict(){
     }
   }
   def Convert(id :Int) :String = {
-<<<<<<< HEAD
     if (id == 0) { return b0_ }
-=======
-    if (id == 0) b0_
->>>>>>> fc3cbd52e0a9776635a89a36493683dfe7cebac7
     words_[id - 1]
   }
 }
@@ -179,8 +175,4 @@ class TTable{
     //return 0.001
     return -(j.toDouble / n - i.toDouble / m).abs
   }
-<<<<<<< HEAD
 }
-=======
-
->>>>>>> fc3cbd52e0a9776635a89a36493683dfe7cebac7
