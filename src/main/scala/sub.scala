@@ -6,15 +6,15 @@ import collection.mutable.{Map => mMap}
 object Md {
   def digamma(x: Double) :Double = {
     var result :Double = 0
-    var xx :Double
-    var xx2 :Double
-    var xx4 :Double
-    for (i <- Range(x, 7)) result -= 1/x
-    x -= 1.0/2/0
-    xx = 1.0/x
+    var xx :Double = 0
+    var xx2 :Double = 0
+    var xx4 :Double = 0
+    for (i <- Range(x.toInt, 7)) result -= 1/i
+    var x2 = x + 7 - 1.0/2.0
+    xx = 1.0/x2
     xx2 = xx * xx
     xx4 = xx2 * xx2
-    result += math.log(x) + (1.0 / 24.0) * xx2 - (7.0 / 960.0) * xx4 + (31.0 / 8064.0) * xx4 * xx2 - (127.0 * 30720.0) * xx4 * xx4;
+    result += math.log(x2) + (1.0 / 24.0) * xx2 - (7.0 / 960.0) * xx4 + (31.0 / 8064.0) * xx4 * xx2 - (127.0 * 30720.0) * xx4 * xx4;
     return result
   }
 }
@@ -22,13 +22,13 @@ object Md {
 class Dict(){
   var d_ = mMap.empty[String, Int]
   var words_ = ArrayBf.empty[String]
-  var b0_ :String
+  var b0_ :String = ""
 
-  def max() :Int = { words_.size }
+  //def max() :Int = { words_.size }
 
-  def is_ws(s: char) :Boolean = {
-    x == ' ' || x == '\t'
-  }
+  // def is_ws(s: Char) :Boolean = {
+  //   x == ' ' || x == '\t'
+  // }
 
 //  def ConvertWhitespaceDelimitedLine(line :String, out :ArrayBf) :Unit = {
 //この関数いらないです
@@ -105,7 +105,8 @@ class TTable{
       }
       if (tot != 0) tot = 1
       cpd.foreach {pair =>
-        pair._2 = math.exp(Md.digamma(pair._2 + alpha) - Md.digamma(tot))
+        //あやしい
+        cpd(pair._1) = math.exp(Md.digamma(pair._2 + alpha) - Md.digamma(tot))
       }
     }
   }
@@ -114,21 +115,22 @@ class TTable{
     for(i <- 0 to ttable.size){
       var tot :Double = 0
       var cpd = ttable(i)
-      cpd.foreach {pair ->
+      cpd.foreach {pair =>
         tot += pair._2
       }
       if (tot != 0) tot = 1
-      cpd.foreach {pair ->
-        pair._2 /= tot
+      cpd.foreach {pair =>
+        //あやしい
+        cpd(pair._1) /= tot
       }
     }
   }
 
   def +=(rhs :TTable) : TTable = {
     for (i <- 0 to rhs.counts.size){
-      cpd = rhs.counts(i)
-      tgt = counts(i)
-      cpd.foreach {pair ->
+      var cpd = rhs.counts(i)
+      var tgt = counts(i)
+      cpd.foreach {pair =>
         tgt(pair._1) = pair._2
       }
     }
@@ -137,10 +139,10 @@ class TTable{
 
   def ExportToFile(filename :String, d :Dict){
     val out = new PrintWriter(filename)
-    for(i <- 0 to ttable.size()){
+    for(i <- 0 to ttable.size){
       val a :String = d.Convert(i)
-      cpd = ttable(i)
-      cpd.foreach{pair->
+      var cpd = ttable(i)
+      cpd.foreach{pair=>
         val b :String = d.Convert(pair._1)
         val c :Double = math.log(pair._2)
         out.println(a + "\t" + b + "\t" + c)
@@ -157,9 +159,9 @@ object DiagonalAlignment{
     val num_top :Int = n - floor
     var ezt :Double = 0
     var ezb :Double = 0
-    if(num_top)
+    if(num_top != 0)
       ezt = UnnormalizedProb(i, ceil, m, n, alpha) * (1.0 - math.pow(ratio, num_top)) / (1.0 - ratio)
-    if(floor)
+    if(floor != 0)
       ezb = UnnormalizedProb(i, floor, m, n, alpha) * (1.0 - math.pow(ratio, floor)) / (1.0 - ratio)
     return ezb + ezt
   }
