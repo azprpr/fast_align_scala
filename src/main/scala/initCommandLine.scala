@@ -66,6 +66,7 @@ object InitCommandLine{
         }
         case "-i" :: i :: rest => {
           input = i
+          println(input)
           parseArgsHelper(rest)
         }
         case "-I" :: ii :: rest => {
@@ -139,5 +140,5 @@ object InitCommandLine{
       sys.exit()
     }
     Args
-  }	
+  }
 }

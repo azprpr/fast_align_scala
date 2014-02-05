@@ -1,44 +1,44 @@
 import InitCommandLine._
 import java.io.File
 import scala.io.Source
-//class Dict{
-//  var i = 1
-//  def Convert(word :String) :Int = {
-//    i += 1
-//    return i
-//  }
-//  def Convert(id :Int) :String = {
-//    return "word"
-//  }
-//}
-//
-//class TTable{
-//  def prob(e :Int, f :Int) :Double = {
-//    return 1e-9
-//  }
-//  def Increment(e :Int, f :Int){
-//  }
-//  def Increment(e :Int, f :Int, x :Double){
-//  }
-//  def NormalizeVB(slpha :Double){
-//  }
-//  def Normalize(){
-//  }
-//  def ExportToFile(filename :String, d :Dict){
-//  }
-//}
-//
-//object DiagonalAlignment{
-//  def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
-//    return 0.001
-//  }
-//  def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
-//    return 0.001
-//  }
-//  def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
-//    return 0.001
-//  }
-//}
+class Dict{
+ var i = 1
+ def Convert(word :String) :Int = {
+   i += 1
+   return i
+ }
+ def Convert(id :Int) :String = {
+   return "word"
+ }
+}
+
+class TTable{
+ def prob(e :Int, f :Int) :Double = {
+   return 1e-9
+ }
+ def Increment(e :Int, f :Int){
+ }
+ def Increment(e :Int, f :Int, x :Double){
+ }
+ def NormalizeVB(slpha :Double){
+ }
+ def Normalize(){
+ }
+ def ExportToFile(filename :String, d :Dict){
+ }
+}
+
+object DiagonalAlignment{
+ def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
+   return 0.001
+ }
+ def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
+   return 0.001
+ }
+ def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
+   return 0.001
+ }
+}
 
 
 object Main{
@@ -48,7 +48,7 @@ object Main{
   def main(args: Array[String]){
 
     val Args= parseArgs(args.toList)
-    val use_null = !Args("no_null_word").toBoolean 	
+    val use_null = !Args("no_null_word").toBoolean
     if (Args("variational_bayes").toBoolean && Args("alpha").toDouble <= 0.0){
       println("\n\nerror\n--alpha must be > 0\n")
       sys.exit()
@@ -57,7 +57,7 @@ object Main{
     var prob_align_not_null :Double = 1.0 - Args("prob_align_null").toDouble
     val kDIV = d.Convert("|||")
     val kNULL :Int = d.Convert("<eps>")
-    var s2t = new TTable() 
+    var s2t = new TTable()
     val size_counts = scala.collection.mutable.Map[String, Int]()
     var tot_len_ratio :Double = 0.0
     var mean_srclen_multiplier :Double = 0.0
@@ -76,16 +76,18 @@ object Main{
       for (line <- Source.fromFile(Args("input")).getLines){
 
         lc += 1
+        println(lc)
         if(lc % 50000 == 0) {
           println(lc.toString + "\n")
         }
+    println ("a")
 
         val tmp = line.split('|')
         if(tmp.size != 4) {
           println("Error line\n")
           sys.exit()
         }
-        
+
         var src = for (word <- tmp(0).split(" ") if (word != "")) yield {
           d.Convert(word)
         }
