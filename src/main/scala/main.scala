@@ -76,11 +76,9 @@ object Main{
       for (line <- Source.fromFile(Args("input")).getLines){
 
         lc += 1
-        println(lc)
         if(lc % 50000 == 0) {
           println(lc.toString + "\n")
         }
-    println ("a")
 
         val tmp = line.split('|')
         if(tmp.size != 4) {
