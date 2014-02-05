@@ -20,7 +20,6 @@ object Md {
 }
 
 class Dict(){
-  //var i = 1
   var d_ = mMap.empty[String, Int]
   var words_ = ArrayBf.empty[String]
   var b0_ :String
@@ -56,7 +55,6 @@ class Dict(){
 //
 
   def Convert(word :String, frozen :Boolean = false) :Int = {
-    i += 1
     val i = d_.get(word)
     i match {
       case Some(value) => value
@@ -64,14 +62,14 @@ class Dict(){
         0
       } else {
         words_ += word
-        d_[word] = words_.size
+        d_(word) = words_.size
         return words_.size
       }
     }
   }
   def Convert(id :Int) :String = {
     if (id == 0) { return b0_ }
-    words_[id - 1]
+    words_(id - 1)
   }
 }
 
@@ -80,7 +78,7 @@ class TTable{
   var counts = ArrayBf.empty[mMap[Int ,Double]]
   def prob(e :Int, f :Int) :Double = {
     if(e < ttable.size){
-      val cpd = ttable[e]
+      val cpd = ttable(e)
       val it = cpd.get(f)
       it match{
         case Some(value) => value
@@ -92,16 +90,16 @@ class TTable{
     }
   }
   def Increment(e :Int, f :Int): Unit = {
-    counts[e][f] += 1.0
+    counts(e)(f) += 1.0
   }
   def Increment(e :Int, f :Int, x :Double): Unit = {
-    counts[e][f] += x
+    counts(e)(f) += x
   }
   def NormalizeVB(alpha :Double): Unit = {
     //swapいらないかな
     for (i <- 1 to ttable.size){
       var tot :Double = 0
-      var cpd = ttable[i]
+      var cpd = ttable(i)
       cpd.foreach {pair =>
         tot += pair._2 + alpha
       }
@@ -115,7 +113,7 @@ class TTable{
     //swapいらない
     for(i <- 0 to ttable.size){
       var tot :Double = 0
-      var cpd = ttable[i]
+      var cpd = ttable(i)
       cpd.foreach {pair ->
         tot += pair._2
       }
@@ -126,12 +124,12 @@ class TTable{
     }
   }
 
-  def +=(rhs :TTable) : TTable{
+  def +=(rhs :TTable) : TTable = {
     for (i <- 0 to rhs.counts.size){
-      cpd = rhs.counts[i]
-      tgt = counts[i]
+      cpd = rhs.counts(i)
+      tgt = counts(i)
       cpd.foreach {pair ->
-        tgt[pair._1] = pair._2
+        tgt(pair._1) = pair._2
       }
     }
     return this
@@ -141,7 +139,7 @@ class TTable{
     val out = new PrintWriter(filename)
     for(i <- 0 to ttable.size()){
       val a :String = d.Convert(i)
-      cpd = ttable[i]
+      cpd = ttable(i)
       cpd.foreach{pair->
         val b :String = d.Convert(pair._1)
         val c :Double = math.log(pair._2)
@@ -149,11 +147,9 @@ class TTable{
       }
     }
   }
-
-  object DiagonalAlignment{
+}
+object DiagonalAlignment{
   def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
-    //return 0.001
-    //
     val split :Double = i.toDouble * n / m
     val floor :Int = split.toInt
     val ceil :Int = floor + 1
@@ -168,11 +164,9 @@ class TTable{
     return ezb + ezt
   }
   def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
-    //return 0.001
     return math.exp(Feature(i, j, m, n) * alpha)
   }
   def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
-    //return 0.001
     return -(j.toDouble / n - i.toDouble / m).abs
   }
 }

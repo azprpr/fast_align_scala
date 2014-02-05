@@ -1,8 +1,6 @@
 import InitCommandLine._
 import java.io.File
 import scala.io.Source
-import test._
-
 //class Dict{
 //  var i = 1
 //  def Convert(word :String) :Int = {
