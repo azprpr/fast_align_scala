@@ -1,45 +1,46 @@
 import InitCommandLine._
 import java.io.File
 import scala.io.Source
+import test._
 
-class Dict{
-  var i = 1
-  def Convert(word :String) :Int = {
-    i += 1
-    return i
-  }
-  def Convert(id :Int) :String = {
-    return "word"
-  }
-}
-
-class TTable{
-  def prob(e :Int, f :Int) :Double = {
-    return 1e-9
-  }
-  def Increment(e :Int, f :Int){
-  }
-  def Increment(e :Int, f :Int, x :Double){
-  }
-  def NormalizeVB(slpha :Double){
-  }
-  def Normalize(){
-  }
-  def ExportToFile(filename :String, d :Dict){
-  }
-}
-
-object DiagonalAlignment{
-  def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
-    return 0.001
-  }
-  def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
-    return 0.001
-  }
-  def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
-    return 0.001
-  }
-}
+//class Dict{
+//  var i = 1
+//  def Convert(word :String) :Int = {
+//    i += 1
+//    return i
+//  }
+//  def Convert(id :Int) :String = {
+//    return "word"
+//  }
+//}
+//
+//class TTable{
+//  def prob(e :Int, f :Int) :Double = {
+//    return 1e-9
+//  }
+//  def Increment(e :Int, f :Int){
+//  }
+//  def Increment(e :Int, f :Int, x :Double){
+//  }
+//  def NormalizeVB(slpha :Double){
+//  }
+//  def Normalize(){
+//  }
+//  def ExportToFile(filename :String, d :Dict){
+//  }
+//}
+//
+//object DiagonalAlignment{
+//  def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
+//    return 0.001
+//  }
+//  def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
+//    return 0.001
+//  }
+//  def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
+//    return 0.001
+//  }
+//}
 
 
 object Main{
@@ -56,6 +57,7 @@ object Main{
     }
     var diagonal_tension = Args("diagonal_tension").toDouble
     var prob_align_not_null :Double = 1.0 - Args("prob_align_null").toDouble
+    val kDIV = d.Convert("|||")
     val kNULL :Int = d.Convert("<eps>")
     var s2t = new TTable() 
     val size_counts = scala.collection.mutable.Map[String, Int]()

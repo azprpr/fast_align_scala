@@ -31,26 +31,29 @@ class Dict(){
     x == ' ' || x == '\t'
   }
 
-  // ConvertWhitespaceDelimitedLine(line :String, out :ArrayBf) :Unit = {
-  //   var cur :Int = 0
-  //   var last :Int = 0
-  //   var state :Int = 0
-  //   out.clear
-  //   while (cur < line.size){
-  //     if (is_ws(line[cur++])){
-  //       if (state != 0){
-  //         out += Convert(line.substring(last, cur - last -1))
-  //         state = 0
-  //       }
-  //     } else {
-  //       if (state != 1){
-  //         last = cur - 1
-  //         state = 1
-  //       }
-  //     }
-  //   }
-  //   if (staet == 1) out += Convert(line.substring(last, cur - last))
-  // }
+//  def ConvertWhitespaceDelimitedLine(line :String, out :ArrayBf) :Unit = {
+//この関数いらないです
+//
+//    var cur :Int = 0
+//    var last :Int = 0
+//    var state :Int = 0
+//    out.clear
+//    while (cur < line.size){
+//      if (is_ws(line[cur++])){
+//        if (state != 0){
+//          out += Convert(line.substring(last, cur - last -1))
+//          state = 0
+//        }
+//      } else {
+//        if (state != 1){
+//          last = cur - 1
+//          state = 1
+//        }
+//      }
+//    }
+//    if (staet == 1) out += Convert(line.substring(last, cur - last))
+//  }
+//
 
   def Convert(word :String, frozen :Boolean = false) :Int = {
     i += 1
@@ -67,7 +70,11 @@ class Dict(){
     }
   }
   def Convert(id :Int) :String = {
+<<<<<<< HEAD
     if (id == 0) { return b0_ }
+=======
+    if (id == 0) b0_
+>>>>>>> fc3cbd52e0a9776635a89a36493683dfe7cebac7
     words_[id - 1]
   }
 }
@@ -172,4 +179,8 @@ class TTable{
     //return 0.001
     return -(j.toDouble / n - i.toDouble / m).abs
   }
+<<<<<<< HEAD
 }
+=======
+
+>>>>>>> fc3cbd52e0a9776635a89a36493683dfe7cebac7
