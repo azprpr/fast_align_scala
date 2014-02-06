@@ -1,47 +1,8 @@
 import InitCommandLine._
 import java.io.File
 import scala.io.Source
-class Dict{
- var i = 1
- def Convert(word :String) :Int = {
-   i += 1
-   return i
- }
- def Convert(id :Int) :String = {
-   return "word"
- }
-}
 
-class TTable{
- def prob(e :Int, f :Int) :Double = {
-   return 1e-9
- }
- def Increment(e :Int, f :Int){
- }
- def Increment(e :Int, f :Int, x :Double){
- }
- def NormalizeVB(slpha :Double){
- }
- def Normalize(){
- }
- def ExportToFile(filename :String, d :Dict){
- }
-}
-
-object DiagonalAlignment{
- def ComputeZ(i :Int, m :Int, n :Int, alpha :Double) :Double = {
-   return 0.001
- }
- def UnnormalizedProb(i :Int, j :Int, m :Int, n :Int, alpha :Double) :Double = {
-   return 0.001
- }
- def Feature(i :Int, j :Int, m :Int, n :Int) :Double = {
-   return 0.001
- }
-}
-
-
-object Main{
+object FastAlign{
 
   var d = new Dict()
 
@@ -55,19 +16,18 @@ object Main{
     }
     var diagonal_tension = Args("diagonal_tension").toDouble
     var prob_align_not_null :Double = 1.0 - Args("prob_align_null").toDouble
-    val kDIV = d.Convert("|||")
     val kNULL :Int = d.Convert("<eps>")
+    val kDIV = d.Convert("|||")
     var s2t = new TTable()
     val size_counts = scala.collection.mutable.Map[String, Int]()
     var tot_len_ratio :Double = 0.0
     var mean_srclen_multiplier :Double = 0.0
+    var probs = scala.collection.mutable.ListBuffer(0.0)
 
     for (iter <- 0 to Args("ITERATIONS").toInt - 1){
       var final_iteration = (iter == (Args("ITERATIONS").toInt - 1))
       println("ITERATION : " + (iter + 1).toString + "   (Final : " + Args("ITERATIONS") + ")")
 
-      var likelihood :Double = 0.0
-      var denom :Double = 0.0
       var lc :Int = 0
       var c0 :Double = 0.0
       var emp_feat :Double = 0.0
@@ -82,7 +42,7 @@ object Main{
 
         val tmp = line.split('|')
         if(tmp.size != 4) {
-          println("Error line\n")
+          println("Error in line\n")
           sys.exit()
         }
 
@@ -99,8 +59,6 @@ object Main{
           trg = tmp
         }
 
-        var probs = scala.collection.mutable.ListBuffer.fill(src.size + 1)(0.0)
-
         if(src.size == 0 || trg.size == 0) {
           println("Error in line\n")
           sys.exit()
@@ -111,18 +69,20 @@ object Main{
           size_counts(trg.size.toString + "," + src.size.toString) += 1
         }
 
+        for (i <- probs.size to src.size){
+          probs += 0.0
+        }
         toks += trg.size
 
         for (j <- 0 to trg.length - 1) {
           val f_j = trg(j)
           var sum = 0.0
           var prob_a_i = 1.0 / (src.size + (if(use_null) 1 else 0))
-
           if(use_null) {
             if(Args("favor_diagonal").toBoolean) {
               prob_a_i = Args("prob_align_null").toDouble
             }
-            probs(0) = (s2t.prob(kNULL, f_j) + prob_a_i)
+            probs(0) = s2t.prob(kNULL, f_j) * prob_a_i
             sum += probs(0)
           }
 
@@ -162,17 +122,11 @@ object Main{
             for (i <- 1 to src.length) {
               val p = probs(i) / sum
               s2t.Increment(src(i - 1), f_j, p)
-              emp_feat += DiagonalAlignment.Feature(j, i, trg.size, (src.size * p).toInt)
+              emp_feat += DiagonalAlignment.Feature(j, i, trg.size, src.size) * p
             }
           }
-          likelihood += scala.math.log(sum)
         }
       }
-
-
-
-      var base2_likelihood = likelihood / scala.math.log(2)
-
 
       emp_feat /= toks
 
@@ -183,7 +137,7 @@ object Main{
             for ((key, value) <- size_counts) {
               val p = key.split(',')
               for (j <- 1 to p(0).toInt) {
-                mod_feat += value * DiagonalAlignment.ComputeZ(j, p(0)toInt, p(1).toInt, diagonal_tension)
+                mod_feat += value * DiagonalAlignment.ComputeDLogZ(j, p(0)toInt, p(1).toInt, diagonal_tension)
               }
             }
             mod_feat /= toks
@@ -206,11 +160,7 @@ object Main{
       }
     }
     s2t.ExportToFile(Args("conditional_probability_filename"), d)
-    println("終わり")
+    println("finish!")
   }
 }
-
-
-
-
 

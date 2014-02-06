@@ -132,6 +132,7 @@ object InitCommandLine{
         outputFile.createNewFile()
       }catch{
         case e: Exception => println("output file not found")
+        sys.exit()
       }
     }
     if(!outputFile.isFile()){
