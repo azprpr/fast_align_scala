@@ -16,7 +16,7 @@ object InitCommandLine{
   -d: [USE] Favor alignment points close to the monotonic diagonoal
   -o: [USE] Optimize how close to the diagonal alignment points should be
   -r: Run alignment in reverse (condition on target and predict source)
-  -c: [REQ] Output conditional probability table
+  -c: Output conditional probability table
 
   Advanced options:
   -I: number of iterations in EM training (default = 5)
@@ -69,22 +69,22 @@ object InitCommandLine{
           parseArgsHelper(rest)
         }
         case "-I" :: ii :: rest => {
-          try{ii.toInt}catch{case e :Exception =>{ println("wrong argment\n"); sys.exit}}
+          try{ii.toInt}catch{case e :Exception =>{ Console.err.println("wrong argment\n"); sys.exit}}
           ITERATIONS = ii
           parseArgsHelper(rest)
         }
         case "-P" :: p :: rest => {
-          try{p.toDouble}catch{case e :Exception =>{ println("wrong argment\n"); sys.exit}}
+          try{p.toDouble}catch{case e :Exception =>{ Console.err.println("wrong argment\n"); sys.exit}}
           prob_align_null = p
           parseArgsHelper(rest)
         }
         case "-T" :: t :: rest => {
-          try{t.toDouble}catch{case e :Exception =>{ println("wrong argment\n"); sys.exit}}
+          try{t.toDouble}catch{case e :Exception =>{ Console.err.println("wrong argment\n"); sys.exit}}
           diagonal_tension = t
           parseArgsHelper(rest)
         }
         case "-a" :: a :: rest => {
-          try{a.toDouble}catch{case e :Exception =>{ println("wrong argment\n"); sys.exit}}
+          try{a.toDouble}catch{case e :Exception =>{ Console.err.println("wrong argment\n"); sys.exit}}
           alpha = a
           parseArgsHelper(rest)
         }
@@ -93,19 +93,19 @@ object InitCommandLine{
           parseArgsHelper(rest)
         }
         case "-I" :: rest => {
-          println("wrong argment\n")
+          Console.err.println("wrong argment\n")
           sys.exit
         }
         case "-P" :: rest => {
-          println("wrong argment\n")
+          Console.err.println("wrong argment\n")
           sys.exit
         }
         case "-T" :: rest => {
-          println("wrong argment\n")
+          Console.err.println("wrong argment\n")
           sys.exit
         }
         case "-a" :: rest => {
-          println("wrong argment\n")
+          Console.err.println("wrong argment\n")
           sys.exit
         }
         case "--help" :: rest => help = "true"
@@ -118,26 +118,28 @@ object InitCommandLine{
     val Args = Map("input" -> input, "is_reverse" -> is_reverse, "ITERATIONS" -> ITERATIONS, "favor_diagonal" -> favor_diagonal, "prob_align_null" -> prob_align_null, "diagonal_tension" -> diagonal_tension, "optimize_tension" -> optimize_tension, "variational_bayes" -> variational_bayes, "alpha" -> alpha, "no_null_word" -> no_null_word, "conditional_probability_filename" -> conditional_probability_filename, "help" -> help)
 
     if(Args("help").toBoolean) {
-      println(helpMessage)
+      Console.err.println(helpMessage)
       sys.exit()
     }
     val inputFile = new File(Args("input"))
     val outputFile = new File(Args("conditional_probability_filename"))
     if(!inputFile.exists || !inputFile.isFile()){
-      println("input file not found")
+      Console.err.println("input file not found")
       sys.exit()
     }
-    if(!outputFile.exists){
-      try{
-        outputFile.createNewFile()
-      }catch{
-        case e: Exception => println("output file not found")
+    if(Args("conditional_probability_filename") != ""){
+      if(!outputFile.exists){
+        try{
+          outputFile.createNewFile()
+        }catch{
+          case e: Exception => Console.err.println("output file not found")
+          sys.exit()
+        }
+      }
+      if(!outputFile.isFile()){
+        Console.err.println("output file not found")
         sys.exit()
       }
-    }
-    if(!outputFile.isFile()){
-      println("output file not found")
-      sys.exit()
     }
     Args
   }

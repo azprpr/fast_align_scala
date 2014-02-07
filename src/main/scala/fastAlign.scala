@@ -11,7 +11,7 @@ object FastAlign{
     val Args= parseArgs(args.toList)
     val use_null = !Args("no_null_word").toBoolean
     if (Args("variational_bayes").toBoolean && Args("alpha").toDouble <= 0.0){
-      println("\n\nerror\n--alpha must be > 0\n")
+      Console.err.println("\n\nerror\n--alpha must be > 0\n")
       sys.exit()
     }
     var diagonal_tension = Args("diagonal_tension").toDouble
@@ -26,7 +26,7 @@ object FastAlign{
 
     for (iter <- 0 to Args("ITERATIONS").toInt - 1){
       var final_iteration = (iter == (Args("ITERATIONS").toInt - 1))
-      println("ITERATION : " + (iter + 1).toString + "   (Final : " + Args("ITERATIONS") + ")")
+      Console.err.println("ITERATION : " + (iter + 1).toString + "   (Final : " + Args("ITERATIONS") + ")")
 
       var lc :Int = 0
       var c0 :Double = 0.0
@@ -37,12 +37,12 @@ object FastAlign{
 
         lc += 1
         if(lc % 50000 == 0) {
-          println(lc.toString + "\n")
+          Console.err.println(lc.toString + "\n")
         }
 
         val tmp = line.split('|')
         if(tmp.size != 4) {
-          println("Error in line\n")
+          Console.err.println("Error in line\n")
           sys.exit()
         }
 
@@ -60,7 +60,7 @@ object FastAlign{
         }
 
         if(src.size == 0 || trg.size == 0) {
-          println("Error in line\n")
+          Console.err.println("Error in line\n")
           sys.exit()
         }
 
@@ -72,6 +72,8 @@ object FastAlign{
         for (i <- probs.size to src.size){
           probs += 0.0
         }
+
+        var first_al = true
         toks += trg.size
 
         for (j <- 0 to trg.length - 1) {
@@ -112,6 +114,16 @@ object FastAlign{
                 max_p = probs(i)
               }
             }
+            if(max_index > 0){
+              if (first_al)
+                first_al = false
+              else
+                print(" ")
+              if (Args("is_reverse").toBoolean)
+                print(j.toString + '-' +  (max_index - 1).toString)
+              else
+                print((max_index - 1).toString +  '-' +  j.toString)
+            }
           }
           else{
             if(use_null) {
@@ -125,6 +137,9 @@ object FastAlign{
               emp_feat += DiagonalAlignment.Feature(j, i, trg.size, src.size) * p
             }
           }
+        }
+        if (final_iteration){
+          print('\n')
         }
       }
 
@@ -159,8 +174,10 @@ object FastAlign{
         prob_align_not_null = 1.0 - Args("prob_align_null").toDouble
       }
     }
-    s2t.ExportToFile(Args("conditional_probability_filename"), d)
-    println("finish!")
+    if(Args("conditional_probability_filename") != "") {
+      s2t.ExportToFile(Args("conditional_probability_filename"), d)
+    }
+    Console.err.println("finish!")
   }
 }
 
