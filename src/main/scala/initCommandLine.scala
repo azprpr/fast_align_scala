@@ -16,7 +16,7 @@ object InitCommandLine{
   -d: [USE] Favor alignment points close to the monotonic diagonoal
   -o: [USE] Optimize how close to the diagonal alignment points should be
   -r: Run alignment in reverse (condition on target and predict source)
-  -c: Output conditional probability table
+  -c: [REQ] Output conditional probability table
 
   Advanced options:
   -I: number of iterations in EM training (default = 5)
